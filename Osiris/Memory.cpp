@@ -56,6 +56,14 @@ Memory::Memory() noexcept
     channels = *reinterpret_cast<Channel**>(findPattern(L"engine", "\x81\xC2????\x8B\x72\x54") + 2);
     playerResource = *reinterpret_cast<PlayerResource***>(findPattern(L"client", "\x74\x30\x8B\x35????\x85\xF6") + 4);
     getDecoratedPlayerName = relativeToAbsolute<decltype(getDecoratedPlayerName)>(findPattern(L"client", "\xE8????\x66\x83\x3E") + 1);
-
+    renderBeams = *reinterpret_cast<IViewRenderBeams**>(findPattern(L"client", "\xB9????\xA1????\xFF\x10\xA1????\xB9" + 1)); //\xB9????\xA1????\xFF\x10\xA1????\xB9
+	setAbsAngle = reinterpret_cast<decltype(setAbsAngle)>(reinterpret_cast<DWORD*>(findPattern(L"client", "\x55\x8B\xEC\x83\xE4\xF8\x83\xEC\x64\x53\x56\x57\x8B\xF1")));
+    CreateState = findPattern(L"client", "\x55\x8B\xEC\x56\x8B\xF1\xB9????\xC7\x46");
+    UpdateState = findPattern(L"client", "\x55\x8B\xEC\x83\xE4\xF8\x83\xEC\x18\x56\x57\x8B\xF9\xF3\x0F\x11\x54\x24");
+    InvalidateBoneCache = findPattern(L"client", "\x80\x3D?????\x74\x16\xA1????\x48\xC7\x81");
+    memalloc = *reinterpret_cast<MemAlloc**>(GetProcAddress(GetModuleHandleA("tier0.dll"), "g_pMemAlloc"));
     localPlayer.init(*reinterpret_cast<Entity***>(findPattern(L"client", "\xA1????\x89\x45\xBC\x85\xC0") + 1));
+    WriteUsercmdDeltaToBufferReturn = *(reinterpret_cast<void**>(findPattern(L"engine", "\x84\xC0\x74\x04\xB0\x01\xEB\x02\x32\xC0\x8B\xFE\x46\x3B\xF3\x7E\xC9\x84\xC0\x0F\x84????")));
+    WriteUsercmd = findPattern(L"client", "\x55\x8B\xEC\x83\xE4\xF8\x51\x53\x56\x8B\xD9\x8B\x0D");
+    clientState = **reinterpret_cast<ClientState***>(findPattern(L"engine", "\xA1????\x8B\x80????\xC3") + 1);
 }

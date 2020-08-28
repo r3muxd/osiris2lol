@@ -27,10 +27,13 @@ static bool worldToScreen(const Vector& in, ImVec2& out, bool floor = true) noex
     out = ImGui::GetIO().DisplaySize / 2.0f;
     out.x *= 1.0f + (matrix._11 * in.x + matrix._12 * in.y + matrix._13 * in.z + matrix._14) / w;
     out.y *= 1.0f - (matrix._21 * in.x + matrix._22 * in.y + matrix._23 * in.z + matrix._24) / w;
+
     if (floor)
         out = ImFloor(out);
     return true;
 }
+
+
 
 static constexpr auto operator-(float sub, const std::array<float, 3>& a) noexcept
 {
@@ -118,10 +121,11 @@ static void renderBox(const BoundingBox& bbox, const Box& config) noexcept
         return;
 
     const ImU32 color = Helpers::calculateColor(config);
-    const ImU32 fillColor = Helpers::calculateColor(config.fill);
+	const ImU32 fillColor = Helpers::calculateColor(config.fill);
 
     switch (config.type) {
     case Box::_2d:
+
         if (config.fill.enabled)
             drawList->AddRectFilled(bbox.min + ImVec2{ 1.0f, 1.0f }, bbox.max - ImVec2{ 1.0f, 1.0f }, fillColor, config.rounding, ImDrawCornerFlags_All);
         else
@@ -156,8 +160,10 @@ static void renderBox(const BoundingBox& bbox, const Box& config) noexcept
             addLineWithShadow(bbox.max - ImVec2{ 0.5f, 1.0f }, { IM_FLOOR(bbox.max.x * 0.75f + bbox.min.x * 0.25f), bbox.max.y - 1.0f }, color);
             addLineWithShadow(bbox.max - ImVec2{ 1.0f, 0.0f }, { bbox.max.x - 1.0f, IM_FLOOR(bbox.max.y * 0.75f + bbox.min.y * 0.25f) }, color);
         }
+             	
         break;
     case Box::_3d:
+
         if (config.fill.enabled) {
             const auto hull = convexHull({ std::begin(bbox.vertices), std::end(bbox.vertices) });
             drawList->AddConvexPolyFilled(hull.data(), hull.size(), fillColor);
@@ -169,7 +175,6 @@ static void renderBox(const BoundingBox& bbox, const Box& config) noexcept
                 }
             }
         }
-
         for (int i = 0; i < 8; ++i) {
             for (int j = 1; j <= 4; j <<= 1) {
                 if (!(i & j))

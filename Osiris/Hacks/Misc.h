@@ -1,4 +1,5 @@
 #pragma once
+#include "../SDK/Vector.h"
 
 enum class FrameStage;
 class GameEvent;
@@ -33,7 +34,6 @@ namespace Misc
     void antiAfkKick(UserCmd* cmd) noexcept;
     void fixAnimationLOD(FrameStage stage) noexcept;
     void autoPistol(UserCmd* cmd) noexcept;
-    void chokePackets(bool& sendPacket) noexcept;
     void autoReload(UserCmd* cmd) noexcept;
     void revealRanks(UserCmd* cmd) noexcept;
     void autoStrafe(UserCmd* cmd) noexcept;
@@ -42,8 +42,16 @@ namespace Misc
     void playHitSound(GameEvent& event) noexcept;
     void killSound(GameEvent& event) noexcept;
     void purchaseList(GameEvent* event = nullptr) noexcept;
+    void StatusBar() noexcept;
+    void DrawInaccuracy(ImDrawList* draw) noexcept;
+	void ShotsCout(GameEvent* event = nullptr, int bestRageDmg = 0, int bestRageChance = 0, Vector quickpeekvector = {0, 0, 0}) noexcept;
+	void fakeDuck(UserCmd* cmd, bool& sendPacket) noexcept;
+    float RandomFloat(float min, float max) noexcept;
+    void chokePackets(bool& sendPacket, UserCmd* cmd) noexcept;
+	void drawStartPos(ImDrawList* dl, Vector &quickpeekstartpos) noexcept;
+	void quickpeek(UserCmd* cmd, Vector &quickpeekstartpos) noexcept;
+	void drawWallbangVector(ImDrawList* dl, Vector &wallbangVector, int wallDmg, int wallChance) noexcept;
     void oppositeHandKnife(FrameStage stage) noexcept;
-
     void runReportbot() noexcept;
     void resetReportbot() noexcept;
 }

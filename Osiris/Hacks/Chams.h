@@ -14,10 +14,24 @@ public:
     Chams() noexcept;
     bool render(void*, void*, const ModelRenderInfo&, matrix3x4*) noexcept;
 private:
+	void renderPlayers(void*, void*, const ModelRenderInfo&, matrix3x4*) noexcept;
     void renderPlayer(Entity* player) noexcept;
     void renderWeapons() noexcept;
     void renderHands() noexcept;
     void renderSleeves() noexcept;
+
+    enum ChamsId {
+        ALLIES = 0,
+        ENEMIES,
+        PLANTING,
+        DEFUSING,
+        LOCALPLAYER,
+        WEAPONS,
+        HANDS,
+        BACKTRACK,
+        SLEEVES,
+    	DESYNC
+    };
 
     Material* normal;
     Material* flat;
@@ -60,4 +74,5 @@ private:
     matrix3x4* customBoneToWorld;
 
     void applyChams(const std::array<Config::Chams::Material, 7>& chams, int health = 0, matrix3x4* customMatrix = nullptr) noexcept;
+	void applyChamsDesync(const std::array<Config::Chams::Material, 7>& chams, int health = 0, matrix3x4* customMatrix = nullptr) noexcept;
 };

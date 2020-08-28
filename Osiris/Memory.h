@@ -6,6 +6,7 @@
 #include <type_traits>
 #include <Windows.h>
 #include <Psapi.h>
+#include "SDK/Tickbase.h"
 
 class ClientMode;
 class Entity;
@@ -14,11 +15,14 @@ class GameEventManager;
 class Input;
 class ItemSystem;
 class KeyValues;
+class MemAlloc;
 class MoveHelper;
 class MoveData;
 class PlayerResource;
 class ViewRender;
 class WeaponSystem;
+class IViewRenderBeams;
+class MemAlloc;
 
 struct ActiveChannels;
 struct Channel;
@@ -26,6 +30,8 @@ struct GlobalVars;
 struct GlowObjectManager;
 struct Trace;
 struct Vector;
+class IViewRenderBeams;
+class ClientState;
 
 class Memory {
 public:
@@ -60,6 +66,13 @@ public:
     uintptr_t drawScreenEffectMaterial;
     std::add_pointer_t<bool __stdcall(const char*, const char*)> submitReport;
     uint8_t* fakePrime;
+	 IViewRenderBeams* renderBeams;
+	 void(__thiscall* setAbsAngle)(Entity*, const Vector&);
+    uintptr_t UpdateState;
+    uintptr_t CreateState;
+    uintptr_t InvalidateBoneCache;
+    MemAlloc* memalloc;
+	
     std::add_pointer_t<void __cdecl(const char* msg, ...)> debugMsg;
     std::add_pointer_t<void __cdecl(const std::array<std::uint8_t, 4>& color, const char* msg, ...)> conColorMsg;
     float* vignette;
@@ -71,11 +84,16 @@ public:
     KeyValues*(__thiscall* keyValuesFindKey)(KeyValues* keyValues, const char* keyName, bool create);
     void(__thiscall* keyValuesSetString)(KeyValues* keyValues, const char* value);
     WeaponSystem* weaponSystem;
+
+	
     std::add_pointer_t<const char** __fastcall(const char* playerModelName)> getPlayerViewmodelArmConfigForPlayerModel;
     GameEventDescriptor* (__thiscall* getEventDescriptor)(GameEventManager* _this, const char* name, int* cookie);
     ActiveChannels* activeChannels;
     Channel* channels;
     PlayerResource** playerResource;
+    void* WriteUsercmdDeltaToBufferReturn;
+    uintptr_t WriteUsercmd;
+    ClientState* clientState;
     const wchar_t*(__thiscall* getDecoratedPlayerName)(PlayerResource* pr, int index, wchar_t* buffer, int buffsize, int flags);
 private:
     static std::uintptr_t findPattern(const wchar_t* module, const char* pattern) noexcept

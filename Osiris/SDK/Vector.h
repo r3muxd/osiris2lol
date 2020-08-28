@@ -128,12 +128,26 @@ struct Vector {
         return x * v.x + y * v.y + z * v.z;
     }
 
+    Vector Cross(const Vector& vOther) const noexcept;
+
     constexpr auto transform(const matrix3x4& mat) const noexcept;
 
     auto distTo(const Vector& v) const noexcept
     {
         return (*this - v).length();
     }
+
+	auto NormalizeInPlace() noexcept
+	{
+		float radius = std::sqrt(x * x + y * y + z * z);
+		float iradius = 1.f / (radius + 1.192092896e-07F /* FLT_EPSILON */ );
+
+		x *= iradius;
+		y *= iradius;
+		z *= iradius;
+
+		return radius;
+	}
 
     auto toAngle() const noexcept
     {
@@ -149,8 +163,24 @@ struct Vector {
                       -std::sin(degreesToRadians(angle.x)) };
     }
 
+	auto distance(const Vector& v) const noexcept
+    {
+        return std::hypot(x - v.x, y - v.y, z - v.z);
+    }
+
+
     float x, y, z;
 };
+
+inline Vector CrossProduct(const Vector& a, const Vector& b)noexcept
+{
+	return Vector{ a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x };
+}
+
+inline Vector Vector::Cross(const Vector& vOther) const noexcept
+{
+	return CrossProduct(*this, vOther);
+}
 
 #include "Matrix3x4.h"
 
@@ -160,3 +190,10 @@ constexpr auto Vector::transform(const matrix3x4& mat) const noexcept
                    dotProduct({ mat[1][0], mat[1][1], mat[1][2] }) + mat[1][3],
                    dotProduct({ mat[2][0], mat[2][1], mat[2][2] }) + mat[2][3] };
 }
+
+
+struct VectorAndDamage
+{
+	Vector vec;
+	float damage;
+};
